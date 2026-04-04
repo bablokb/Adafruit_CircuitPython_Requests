@@ -125,7 +125,6 @@ class Response:
         self.reason: bytearray = self._readto(b"\r\n")
         """The status reason returned by the server"""
         self._parse_headers()
-        self._raw = None
         self._session = session
 
     def __enter__(self) -> "Response":
@@ -334,14 +333,14 @@ class Response:
             if isinstance(self._cached, (list, dict)):
                 return self._cached
             raise RuntimeError("Cannot access json after getting text or content")
-        if not self._raw:
-            self._raw = _RawResponse(self)
+        raw = _RawResponse(self)
 
         self._validate_not_gzip()
 
-        obj = json_module.load(self._raw)
+        obj = json_module.load(raw)
         if not self._cached:
             self._cached = obj
+        self.close()
 
         return obj
 
