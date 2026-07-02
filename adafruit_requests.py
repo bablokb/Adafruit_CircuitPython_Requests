@@ -647,7 +647,7 @@ class Session:
             )
             ok = True
             try:
-                self._send_request(socket, host, method, path, headers, data, json, files)
+                self._send_request(socket, f"{host}:{port}", method, path, headers, data, json, files)
             except OSError as exc:
                 last_exc = exc
                 ok = False
@@ -688,7 +688,7 @@ class Session:
                     url = redirect
                 elif redirect[0] == "/":
                     # relative URL, absolute path
-                    url = "/".join([proto, dummy, host, redirect[1:]])
+                    url = "/".join([proto, dummy, f"{host}:{port}", redirect[1:]])
                 else:
                     # relative URL, relative path
                     path = path.rsplit("/", 1)[0]
@@ -697,7 +697,7 @@ class Session:
                         path = path.rsplit("/", 1)[0]
                         redirect = redirect.split("../", 1)[1]
 
-                    url = "/".join([proto, dummy, host, path, redirect])
+                    url = "/".join([proto, dummy, f"{host}:{port}", path, redirect])
 
                 self._last_response = resp
                 resp = self.request(method, url, data, json, headers, stream, timeout)
