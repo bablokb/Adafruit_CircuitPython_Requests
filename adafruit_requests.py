@@ -647,7 +647,9 @@ class Session:
             )
             ok = True
             try:
-                self._send_request(socket, f"{host}:{port}", method, path, headers, data, json, files)
+                self._send_request(
+                    socket, f"{host}:{port}", method, path, headers, data, json, files
+                )
             except OSError as exc:
                 last_exc = exc
                 ok = False
